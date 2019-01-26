@@ -6,6 +6,7 @@
 #include "DynamicObj.h"
 #include "Curve.h"
 #include "Boomerang.h"
+#include "Dragon.h"
 
 using namespace std;
 
@@ -20,6 +21,16 @@ unsigned int shaderColorActivationId;
 **************************/
 
 Player player;
+
+Dragon* dragon;
+float dragonWidth = 0.5, dragonHeight = 0.5;
+unsigned int dragonLife = 4*60, fireBallFreq = 30, dragonFreq = 10*60;
+color_t dragonColor = {130, 50, 22};
+color_t dragonColorInside = {239, 124, 23};
+vector<DynamicObj*> fireBalls; 
+float fireBallRadius = 0.2, fireBallSpeedy = -0.05, fireBallSpeedx = -0.05;
+unsigned int fireBallLife = 60;
+color_t fireBallColor = {255, 0, 0};
 
 Boomerang* boomerang;
 float boomerangAccelx = 0.001, boomerangSpeedx = -0.1, boomerangSpeedy = 1.0/60.0, boomerangRot = 10;
@@ -164,6 +175,10 @@ void draw() {
     if(boomerang!=NULL && boomerang->speedx<0) boomerang->Draw(SVP);
     player.Draw(SVP);
     if(boomerang!=NULL && boomerang->speedx>0) boomerang->Draw(SVP);
+
+    for(auto it:fireBalls) it->Draw(SVP);
+    if(dragon!=NULL) dragon->Draw(SVP);
+
     //seven segment
     {
         unsigned int temp = points;
@@ -369,6 +384,17 @@ void processPlayerCollisions(){
     {
         if(detect_collision( (*platform[i]).GetBoundingBox(), playerBoundingBox, collisionBuffer))
             floorCollide = 1, collideBox = (*platform[i]).GetBoundingBox();
+    }
+    {
+        auto it = fireBalls.begin();
+        while(it!=fireBalls.end()){
+            if(detect_collision( (**it).GetBoundingBox(), playerBoundingBox, 0))
+                if(player.swordTime==0)
+                    quit(window);
+                else 
+                    delete *it, fireBalls.erase(it), points++;
+            else it++;
+        }
     }
     {
         auto it = coins.begin();
@@ -690,6 +716,33 @@ void tick_elements() {
         boomerang->Tick();
         if(boomerang->position.x > 5) delete boomerang, boomerang = NULL;
     }
+
+    ///////////////dragon//////////////////////////
+    if(dragon!=NULL){
+        dragon->speedx = player.speedx;
+        dragon->speedy = player.speedy/2;
+        dragon->Tick();
+        dragon->position.x = max(player.position.x+4, (float)(player.position.x+3+(rand()%100)/100-0.5));
+        cout << dragon->life << endl;
+        if(dragon->life == 0){
+            delete dragon;
+            dragon = NULL;
+            for(auto it:fireBalls) delete it;
+            fireBalls.clear();
+        }
+        auto it = fireBalls.begin();
+        while(it!=fireBalls.end()){
+            (*it)->Gravity();            
+            processPowerCollisions(*it);
+            (*it)->Tick();
+
+            if((*it)->life==0) {
+                delete *it;
+                fireBalls.erase(it);
+            }
+            else it++;
+        }
+    }
 }
 
 void levelGenerator(){ 
@@ -763,6 +816,18 @@ void levelGenerator(){
         float posx = max(player.position.x+2, (float)0);
         boomerang = new Boomerang(posx, posy, playerWidth, playerHeight,boomerangSpeedx,boomerangSpeedy,playerHeight/5, boomerangColor, COLOR_BACKGROUND);
     }   
+
+    if(t60.frameCount%dragonFreq==0 && rand()%3 == 0 && dragon==NULL){
+        float posy = player.position.y;
+        float posx = max(player.position.x+2, (float)(player.position.x+3+(rand()%100)/100-0.5));
+        dragon = new Dragon(posx, posy, dragonWidth, dragonHeight, player.speedy, dragonColor, dragonColorInside);
+        dragon -> life = dragonLife;
+    }
+
+    if(t60.frameCount%fireBallFreq==0 && dragon!=NULL){
+        fireBalls.push_back(new DynamicObj(dragon->position.x, dragon->position.y, fireBallRadius, 1000, fireBallSpeedx, (dragon->position.y-player.position.y)/abs(dragon->position.y-player.position.y)*fireBallSpeedy, fireBallColor)); 
+        fireBalls[fireBalls.size()-1]->life = fireBallLife;
+    }
 }
 /* Initialize the OpenGL rendering properties */
 /* Add all the models to be created here */
@@ -782,6 +847,7 @@ void initGL(GLFWwindow *window, int width, int height) {
     curve = NULL;
     magnet = NULL;
     boomerang = NULL;
+    dragon = NULL;
 
     sevenSegment[0][0] = new StaticObj(0, segmentHeight, segmentWidth, segmentHeight, 0, 90, {0,0,0});
     sevenSegment[1][0] = new StaticObj(-segmentHeight/2, segmentHeight/2, segmentWidth, segmentHeight, 0, 0, {0,0,0});

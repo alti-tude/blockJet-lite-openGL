@@ -1,0 +1,37 @@
+* MOVEMENT *
+------------
+
+W -> moveUp(adds upward acceleration)
+A -> moveLeft
+S -> moveDown(adds downwards acceleration)
+D -> moveRight
+
+* FIRING *
+-----------
+
+arrow keys -> fire in the direction of the key press
+2 simultaneous adjacent keys pressed -> fire in a diagonal
+
+* ZOOM *
+---------
+scroll to zoom everythin except the score(scaling matrix)
+
+* ENEMIES *
+------------
+fireBeam -> 2 beams appear randomly and try to sandwich the player(can't be extinguished)
+fireLine -> kill player on contact
+boomerang -> 
+    goes behind the player, towards left, won't hit the player.
+    takes a turn, comes in front of the player, collision can happen.
+(BONUS) dragon -> fires balls, and tries to folow the player. unkillable
+
+
+* POWERUP *
+-----------
+(BONUS) green ball-> sword, cut through anything and everything(except the dragon, cuz no animals were harmed in the making of this game)
+blue balls -> choose your pill neo(for speed boost ofcourse)
+
+* OBJECTS *
+-----------
+ring -> go around the ring automatically, a family friendly whee ride for all. oh, also, free protection!
+magnet -> who doesn't like constant force exerting magnets. (WELL I DON'T)
