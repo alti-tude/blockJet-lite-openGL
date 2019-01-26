@@ -1,7 +1,7 @@
-#include "main.h"
-
 #ifndef BALL_H
 #define BALL_H
+#include "main.h"
+
 
 
 class Ball {

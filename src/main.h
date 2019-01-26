@@ -18,9 +18,9 @@
 #define GRAVITY (double)0.0010
 
 struct color_t {
-    int r;
-    int g;
-    int b;
+    float r;
+    float g;
+    float b;
 };
 
 // nonedit.cpp
@@ -36,6 +36,7 @@ void keyboard(GLFWwindow *window, int key, int scancode, int action, int mods);
 void keyboardChar(GLFWwindow *window, unsigned int key);
 void mouseButton(GLFWwindow *window, int button, int action, int mods);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+extern float yOffset, prevYOffset;
 
 // other_handlers.cpp
 void error_callback(int error, const char *description);
@@ -62,7 +63,8 @@ struct GLMatrices {
 };
 
 extern GLMatrices Matrices;
-
+extern unsigned int shaderColorId;
+extern unsigned int shaderColorActivationId;
 // ---- Logic ----
 
 enum direction_t { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT };
@@ -75,7 +77,11 @@ struct bounding_box_t {
 };
 
 bool detect_collision(bounding_box_t a, bounding_box_t b, float buffer);
-bool detect_collision_radial(bounding_box_t a, bounding_box_t b, float radius_b, float radius_a);
+bool detect_collision_line_line(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+bool detect_collision_box_line(bounding_box_t box, glm::vec3 line, float length, float angle);
+
+template <typename T>
+bool detect_collision_radial(T a, T b, float radius_b, float radius_a);
 
 extern float screen_zoom, screen_center_x, screen_center_y;
 void reset_screen();

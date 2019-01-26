@@ -94,11 +94,11 @@ void StaticObj::Tick() {
 vector<bounding_box_t>& StaticObj::GetBoundingBox(float size){
     if(size != sizeCache){
         sizeCache = size;
-        float x = position.x-m_height/2*costheta + size*costheta;
-        float y = position.y-m_height/2*sintheta + size*sintheta;
+        float x = position.x-m_height/2*sintheta + size*sintheta;
+        float y = position.y-m_height/2*costheta + size*costheta;
 
         for(int i=0;i<(int)(m_height/size);i++){
-            v.push_back({x,y,size*costheta,sintheta });
+            v.push_back({x,y,sintheta ,size*costheta });
             x += size*costheta;
             y += size*sintheta;
         }

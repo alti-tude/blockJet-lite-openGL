@@ -1,7 +1,7 @@
-#include"main.h"
-
 #ifndef PARTICLES_H
 #define PARTICLES_H
+#include"main.h"
+
 class Particle{
 public:
     double speedx, speedy;

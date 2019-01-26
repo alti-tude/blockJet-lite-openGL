@@ -2,10 +2,10 @@
 #include <utility> 
 using namespace std;
 
-#ifndef DYNAMIC_OBJ_H
-#define DYNAMIC_OBJ_H
+#ifndef BOOMERANG_H
+#define BOOMERANG_H
 
-class DynamicObj{
+class Boomerang{
 public:
 public:
     glm::vec3 position;
@@ -14,13 +14,12 @@ public:
     unsigned int life;
 
 private:
-    VAO *object;
+    VAO *object, *object2;
     float m_width, m_height;
     
 public:
-    DynamicObj() {}
-    DynamicObj(float x, float y, float width, float height, float speedx, float speedy, color_t color);
-    DynamicObj(float x, float y, float radius, int n, float speedx, float speedy, color_t color);
+    Boomerang() {}
+    Boomerang(float x, float y, float width, float height, float speedx, float speedy, float stroke, color_t color, color_t colorInside);
 
     void Draw(glm::mat4 VP);
     void SetPosition(float x, float y);
