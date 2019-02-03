@@ -1,11 +1,15 @@
-Graphics Boilerplate Code
-=========================
+BlockJet-lite
+==============
 
-This is boilerplate code for the assignments which might be helpful.
+This is 'a clone'. Due to lack of advancement in cloning humanoids, our clone looks like a block!
 
-
-License
--------
-The MIT License https://meghprkh.mit-license.org/
-
-Copyright &copy; 2018 Megh Parikh <meghprkh@gmail.com>
+Install (UBUNTU)
+================
+```bash
+sudo apt install libglew-dev libglfw3-dev libglm-dev cmake pkg-config
+mkdir build
+cd build
+cmake ..
+make all
+./exe
+```
